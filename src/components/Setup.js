@@ -7,22 +7,39 @@ import {
   TimePickerAndroid,
 } from 'react-native'
 import moment from 'moment'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 
 import RunTime from './RunTime'
 import { formatDuration } from '../formatDuration'
 
 class Setup extends Component {
-  openTimePicker(onChange) {
-    return () => {
-      TimePickerAndroid.open().then(({ action, hour, minute }) => {
-        if (action === TimePickerAndroid.timeSetAction) {
-          const timeString = `${moment().format('YYYY-MM-DD')} ${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}:00`
-          // console.log('time', timeString)
-          const startTime = moment(timeString)
-          onChange(startTime)
-        }
-      })
+  constructor() {
+    super()
+    
+    this.state = {
+      showTimePicker: false,
+      onUpdateTime: null,
     }
+  }
+  
+  openTimePicker(onUpdateTime) {
+    this.setState({
+      showTimePicker: true,
+      onUpdateTime,
+    })
+  }
+
+  confirmTimePicker(selectedTime) {
+    this.state.onUpdateTime(moment(selectedTime))
+    this.setState({
+      showTimePicker: false,
+    })
+  }
+
+  cancelTimePicker() {
+    this.setState({
+      showTimePicker: false,
+    })
   }
 
   openDurationPicker(onChange) {
@@ -49,7 +66,7 @@ class Setup extends Component {
         <View style={styles.row}>
           <Text style={styles.rowText}>Start time: {this.formatTime(this.props.startTime)}</Text>
 
-          <TouchableOpacity style={styles.rowButton} onPress={this.openTimePicker(this.props.onChangeStartTime)}>
+          <TouchableOpacity style={styles.rowButton} onPress={() => this.openTimePicker(this.props.onChangeStartTime)}>
             <Text>Edit</Text>
           </TouchableOpacity>
 
@@ -61,7 +78,7 @@ class Setup extends Component {
         <View style={styles.row}>
           <Text style={styles.rowText}>Finish time: {this.formatTime(this.props.finishTime)}</Text>
 
-          <TouchableOpacity style={styles.rowButton} onPress={this.openTimePicker(this.props.onChangeFinishTime)}>
+          <TouchableOpacity style={styles.rowButton} onPress={() => this.openTimePicker(this.props.onChangeFinishTime)}>
             <Text>Edit</Text>
           </TouchableOpacity>
 
@@ -95,6 +112,14 @@ class Setup extends Component {
             <Text>{this.props.locationTest ? 'Test' : 'GPS'}</Text>
           </TouchableOpacity>
         </View>
+
+        <DateTimePicker
+          isVisible={this.state.showTimePicker}
+          onConfirm={this.confirmTimePicker.bind(this)}
+          onCancel={this.cancelTimePicker.bind(this)}
+          mode="time"
+          is24Hour={false}
+        />
       </View>
     )
   }
