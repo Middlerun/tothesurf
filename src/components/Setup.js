@@ -59,7 +59,6 @@ class Setup extends Component {
     this.setState({
       showDurationPicker: false,
     })
-    console.log(formatDuration(duration))
     this.props.onChangeGoalTime(duration)
   }
 

@@ -15,14 +15,14 @@ class RunTime extends Component {
   }
 
   startUpdating() {
-    console.log('starting updates')
+    // console.log('starting updates')
     this.setState({
       updateInterval: setInterval(this.update.bind(this), 100),
     })
   }
 
   stopUpdating() {
-    console.log('stopping updates')
+    // console.log('stopping updates')
     clearInterval(this.state.updateInterval)
     this.setState({
       updateInterval: null,
