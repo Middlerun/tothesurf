@@ -4,12 +4,12 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TimePickerAndroid,
 } from 'react-native'
 import moment from 'moment'
 import DateTimePicker from 'react-native-modal-datetime-picker'
 
 import RunTime from './RunTime'
+import DurationPicker from './DurationPicker'
 import { formatDuration } from '../formatDuration'
 
 class Setup extends Component {
@@ -18,6 +18,7 @@ class Setup extends Component {
     
     this.state = {
       showTimePicker: false,
+      showDurationPicker: false,
       onUpdateTime: null,
     }
   }
@@ -42,18 +43,24 @@ class Setup extends Component {
     })
   }
 
-  openDurationPicker(onChange) {
-    return () => {
-      TimePickerAndroid.open().then(({ action, hour, minute }) => {
-        if (action === TimePickerAndroid.timeSetAction) {
-          if (hour >= 12) {
-            hour -= 12
-          }
-          const duration = moment.duration(hour*60 + minute, 'minutes')
-          onChange(duration)
-        }
-      })
-    }
+  openDurationPicker() {
+    this.setState({
+      showDurationPicker: true,
+    })
+  }
+
+  cancelDurationPicker() {
+    this.setState({
+      showDurationPicker: false,
+    })
+  }
+
+  confirmDurationPicker(duration) {
+    this.setState({
+      showDurationPicker: false,
+    })
+    console.log(formatDuration(duration))
+    this.props.onChangeGoalTime(duration)
   }
 
   formatTime(time) {
@@ -94,7 +101,7 @@ class Setup extends Component {
 
         <View style={styles.row}>
           <Text style={styles.rowText}>Goal time: {formatDuration(this.props.goalTime)}</Text>
-          <TouchableOpacity style={styles.rowButton} onPress={this.openDurationPicker(this.props.onChangeGoalTime)}>
+          <TouchableOpacity style={styles.rowButton} onPress={this.openDurationPicker.bind(this)}>
             <Text>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -119,6 +126,13 @@ class Setup extends Component {
           onCancel={this.cancelTimePicker.bind(this)}
           mode="time"
           is24Hour={false}
+        />
+
+        <DurationPicker
+          duration={this.props.goalTime}
+          isVisible={this.state.showDurationPicker}
+          onCancel={this.cancelDurationPicker.bind(this)}
+          onConfirm={this.confirmDurationPicker.bind(this)}
         />
       </View>
     )
