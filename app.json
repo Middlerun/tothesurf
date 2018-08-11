@@ -1,10 +1,10 @@
 {
   "expo": {
-    "sdkVersion": "19.0.0",
+    "sdkVersion": "27.0.0",
     "name": "To the Surf",
     "description": "An app for tracking your progress during the City2Surf",
     "icon": "https://s3.amazonaws.com/exp-us-standard/rnplay/app-icon.png",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "slug": "tothesurf",
     "privacy": "unlisted",
     "ios": {
